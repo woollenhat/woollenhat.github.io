@@ -37,12 +37,31 @@ body = document.getElementById('bodyCopy');
 
 var daysPassed = Math.floor((Date.now() - new Date('August 19, 2017')) / (1000 * 60 * 60 * 24));
 
+var index = 0;
 var gradient;
+
+gradient = random(gradients);
+function changeGradient() {
+  var newGradient = gradient;
+  while (gradient.name === newGradient.name) {
+    newGradient = random(gradients);
+  }
+  gradient = newGradient;
+}
+
 function changeSlide() {
-  gradient = random(gradients);
-  var quote = random(content);
+
+  // Get content + gradient
+  changeGradient();
+  var quote = content[index];
+
+  // Assign text
   headline.innerHTML = quote.headline(daysPassed);
   body.innerText = quote.body;
+
+  // Increment
+  index = index === content.length - 1 ? 0 : index + 1;
+
 }
 changeSlide();
 
@@ -94,7 +113,6 @@ function trackMouse(e) {
   tilt = { x: x/max, y: y/max };
   var r = Math.round(vectorToDeg(tilt.x, tilt.y))
   rotation = ((tilt.y > 0 ? 180 + (180 - r) : r) - 90) * -1;
-
 }
 window.addEventListener('mousemove', trackMouse);
 window.addEventListener('click', changeSlide);

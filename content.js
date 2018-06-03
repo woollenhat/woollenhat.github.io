@@ -1,14 +1,18 @@
 var content = [
   {
     headline: function(days) {
+      var  billionKm = _.round((299792458 * (days*24*60*60)) / 1000 / 1000000000, 0);
+      return 'A photon emitted at the time you got married has travelled ' +  billionKm + ' billion kilometers by now';
+    },
+    body: 'May the sun shine brightly on your shared love even if it hasn\'t travelled quite as far'
+  },
+  {
+    headline: function(days) {
       var n = _.round(days/(365*2), 2);
-      return 'If you had started maturing one wheel of parmesan cheese at a time on the day of your wedding, you would now have ' + n + ' cheese' + (n>1 ? 's' : '');
+      return 'If you had started maturing wheels of parmesan cheese on the day of your wedding, you would now have ' + n + ' cheese' + (n===1 ? '' : 's');
     },
     body: 'May your love for each other mature and grow deeper and more meaningful with every passing day.'
-  }
-];
-
-var overflow = [
+  },
   {
     headline: function(days) {
       var months = _.round(days/30/7, 2);
@@ -48,7 +52,7 @@ var overflow = [
     headline: function(days) {
       var n = days / (365 * 24);
       if (n < 1) {
-        return 'If Marco Polo had set out on his famous travels on your wedding day, he would have completed ' + Math.floor(n*100) + '% of his journey';
+        return 'If Marco Polo had set out on his famous travels on your wedding day, he would have completed ' + Math.floor(n*100) + '% of his 24 year journey';
       }
       return 'If Marco Polo had set out on his famous travels on your wedding day, he would have returned to Venice ' + _.round(n, 2) + ' times by now';
     },
@@ -76,3 +80,7 @@ var overflow = [
     body: 'We hope that you, like Phileas, never stop dreaming and that you attempt things you have set your heart on – even if at first glance they seem hard to achieve.'
   }
 ];
+
+content = _.shuffle(content);
+
+// var overflow = [];
