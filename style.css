@@ -12,9 +12,6 @@ body {
   position: absolute;
   top: 0; right: 0; bottom: 0; left: 0;
   background-size: cover;
-  display: flex;
-  justify-content: center;
-  align-items: center;
 }
 
 h1 {
@@ -35,7 +32,16 @@ p {
   background-image: var(--pattern-topography);
 }
 
-#inscription {
+.inscription-container {
+  transition: opacity 0.25s 0s ease;
+  position: absolute;
+  top: 0; right: 0; bottom: 0; left: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.inscription {
   position: relative;
   display: flex;
   flex-direction: column;
@@ -47,7 +53,7 @@ p {
 }
 
 @media screen and (orientation: portrait) {
-  #inscription {
+  .inscription {
     font-size: 9vw;
     width: 40em;
     padding: 1em;

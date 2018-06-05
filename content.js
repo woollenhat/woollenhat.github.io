@@ -1,6 +1,33 @@
 var content = [
   {
     headline: function(days) {
+      var years = _.round(days/88, 2);
+      return 'If you lived on Mercury, you would already be married ' + years + ' years';
+    },
+    body: 'We hear property prices are great, but the commute to Earth is a royal pain.'
+  },
+  {
+    headline: function(days) {
+      return 'Since your wedding day about ' + days + ' Mayfly lifetimes have passed';
+    },
+    body: 'We wish you these and many more lifetimes together!'
+  },
+  {
+    headline: function(days) {
+      var km = _.round((18.13 / 2015) * days, 2);
+      return 'If the Curiosity Rover started driving on Mars on your wedding day, it would have travelled ' + km + 'km by now';
+    },
+    body: 'We hope you find the time to take it slow every now and again. Maybe not 0.0004km/h, but you get the idea.'
+  },
+  {
+    headline: function(days) {
+      var times = _.round((days*24)/(24*6+9), 2);
+      return 'Since your wedding day, you could have watched the entirety of Gilmore Girls exactly ' + times + ' times';
+    },
+    body: 'We wish you just as much excitement, but none of the drama!'
+  },
+  {
+    headline: function(days) {
       var  billionKm = _.round((299792458 * (days*24*60*60)) / 1000 / 1000000000, 0);
       return 'A photon emitted at the time you got married has travelled ' +  billionKm + ' billion kilometers by now';
     },
@@ -81,6 +108,4 @@ var content = [
   }
 ];
 
-content = _.shuffle(content);
-
-// var overflow = [];
+// content = _.shuffle(content);

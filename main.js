@@ -25,27 +25,62 @@ var gradients = [
   {name: 'Evening Delight', colors: ['#93278F', '#00A99D']}
 ];
 
+function lerpColor(a, b, amount) {
+
+    var ah = parseInt(a.replace(/#/g, ''), 16),
+        ar = ah >> 16, ag = ah >> 8 & 0xff, ab = ah & 0xff,
+        bh = parseInt(b.replace(/#/g, ''), 16),
+        br = bh >> 16, bg = bh >> 8 & 0xff, bb = bh & 0xff,
+        rr = ar + amount * (br - ar),
+        rg = ag + amount * (bg - ag),
+        rb = ab + amount * (bb - ab);
+
+    return '#' + ((1 << 24) + (rr << 16) + (rg << 8) + rb | 0).toString(16).slice(1);
+}
+
+function createElement() {
+  var el = document.createElement('div');
+  el.className = 'inscription-container';
+  var inscription = document.createElement('div');
+  var headline = document.createElement('h1');
+  var body = document.createElement('p');
+  inscription.className = 'inscription';
+  inscription.appendChild(headline);
+  inscription.appendChild(body);
+  el.appendChild(inscription);
+  document.body.appendChild(el);
+  return {
+    container: el,
+    headline: headline,
+    body: body
+  };
+}
+
+var inscription = createElement();
+
 function random(arr) {
   return arr[Math.round(Math.random() * (arr.length - 1))];
 }
 
+// Easing (t between 0 and 1)
+function easeInOut(t) {
+  return t<.5 ? 4*t*t*t : (t-1)*(2*t-2)*(2*t-2)+1
+}
+
 b = document.body;
 p = document.getElementById('pattern');
-ins = document.getElementById('inscription');
-headline = document.getElementById('headlineCopy');
-body = document.getElementById('bodyCopy');
 
 var daysPassed = Math.floor((Date.now() - new Date('August 19, 2017')) / (1000 * 60 * 60 * 24));
 
 var index = 0;
-var gradient;
-
-gradient = random(gradients);
+var gradient = random(gradients);
+var gradientOld = random(gradients);
 function changeGradient() {
   var newGradient = gradient;
   while (gradient.name === newGradient.name) {
     newGradient = random(gradients);
   }
+  gradientOld = gradient;
   gradient = newGradient;
 }
 
@@ -55,16 +90,25 @@ function changeSlide() {
   changeGradient();
   var quote = content[index];
 
+  var headline = inscription.headline;
+  var body = inscription.body;
+
   // Assign text
-  headline.innerHTML = quote.headline(daysPassed);
-  body.innerText = quote.body;
+  inscription.container.style.opacity = 0;
+  setTimeout(function() {
+    headline.innerHTML = quote.headline(daysPassed);
+    body.innerText = quote.body;
+  }, 500);
 
   // Increment
   index = index === content.length - 1 ? 0 : index + 1;
+  prog = 0;
 
 }
 changeSlide();
+setInterval(changeSlide, 12000);
 
+var prog = 1;
 var speed = 50;
 var drift = {x: 0, y: 0};
 var tilt = {x: 1, y: 1};
@@ -72,11 +116,32 @@ var rotation = 0;
 var timeLast = Date.now();
 
 function patternDrift(delta) {
+
+  prog = Math.min(1, prog + speed * delta / 100);
+  var val = easeInOut(prog);
+
   var increment = speed * delta;
+
   drift.x = (drift.x + increment * tilt.x) % 600;
   drift.y = (drift.y + increment * tilt.y) % 600;
   p.style.backgroundPosition = drift.x + 'px ' + drift.y + 'px';
-  b.style.backgroundImage = 'linear-gradient(' + rotation + 'deg, ' + gradient.colors[0] + ', ' + gradient.colors[1] + ')';
+
+  if (val === 1) {
+    inscription.container.style.opacity = 1;
+  }
+
+  var colorA = lerpColor(gradientOld.colors[0], gradient.colors[0], val);
+  var colorB = lerpColor(gradientOld.colors[1], gradient.colors[1], val);
+  b.style.backgroundImage = 'linear-gradient(' + rotation + 'deg, ' + colorA + ', ' + colorB + ')';
+
+  // var grad = 'linear-gradient(' + rotation + 'deg, '
+  //   + gradient.colors[0] + '0%,  '
+  //   + gradient.colors[1] + ' ' + (val*100).toString() + '%,  '
+  //   + gradientOld.colors[0] + ', '
+  //   + gradientOld.colors[1] + ')';
+  //   console.log(grad);
+  //   b.style.backgroundImage = grad;
+
 }
 patternDrift(0);
 
@@ -104,6 +169,16 @@ function vectorToDeg(x, y) {
   return radToDeg(Math.acos(x / Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2))));
 }
 
+function trackDevice(e) {
+  var x = e.gamma;
+  var y = e.beta;
+  var max = Math.max(Math.abs(x), Math.abs(y));
+
+  tilt = { x: x/max, y: y/max };
+  var r = Math.round(vectorToDeg(tilt.x, tilt.y))
+  rotation = ((tilt.y > 0 ? 180 + (180 - r) : r) - 90) * -1;
+}
+
 // Event attachments
 function trackMouse(e) {
   var x = (e.pageX - window.innerWidth * 0.5) / (window.innerWidth * 0.5);
@@ -114,5 +189,8 @@ function trackMouse(e) {
   var r = Math.round(vectorToDeg(tilt.x, tilt.y))
   rotation = ((tilt.y > 0 ? 180 + (180 - r) : r) - 90) * -1;
 }
+
 window.addEventListener('mousemove', trackMouse);
-window.addEventListener('click', changeSlide);
+window.addEventListener('deviceorientation', trackDevice);
+
+// window.addEventListener('click', changeSlide);
