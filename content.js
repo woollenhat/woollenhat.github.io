@@ -1,6 +1,56 @@
 var content = [
   {
     headline: function(days) {
+      var times = _.round(days/(365*3), 2);
+      var percentDone = times * 100;
+      if (percentDone < 100) {
+        return 'If Shakespeare had started writing “Romeo and Juliet” on your wedding day he would be ' + percentDone + '% done by now';
+      }
+      return 'If Shakespeare had started writing “Romeo and Juliet” on your wedding day he would be done ' + times + ' times by now';
+    },
+    body: 'We wish you all the romance without any of the tragic endings.'
+  },
+  {
+    headline: function(days) {
+      var cmGrowth = _.round(1.27 * (days/30), 2);
+      return 'If you had started growing your hair or beard on your wedding day, you would have added ' + cmGrowth + 'cm by now';
+    },
+    body: 'We\'ll leave it to you to decide who gets the beard.'
+  },
+  {
+    headline: function(days) {
+      var timesDone = _.round(days/(365*20), 2);
+      var percentDone = timesDone * 100;
+      if (percentDone < 100) {
+        return 'If construction of the Achener Dom had started on your wedding day, it would be ' + percentDone + '% done now';
+      }
+      return 'If construction of the Achener Dom had started on your wedding day, it would be done ' + timesDone + ' time by now';
+    },
+    body: 'You are well on your way to build something as beautiful and awe-inspiring.'
+  },
+  {
+    headline: function(days) {
+      var kmDistance = _.round(0.03 * (days * 24 * 60 * 60) / 1000 / 42.2);
+      return 'A sloth “running” back to back marathons since your wedding day would have completed ' + kmDistance + ' by now';
+    },
+    body: 'Let this serve as a reminder that much can be achieved by going slow and steady.'
+  },
+  {
+    headline: function(days) {
+      var trips = _.round(days/14, 2);
+      return 'Had the Titanic left port on you wedding day (and not sunk) it could have made its return trip to New York ' + trips + ' times by now';
+    },
+    body: 'We are certain that if its hull had been as rock solid as your relationship, it actually would have!'
+  },
+  {
+    headline: function(days) {
+      var kgHoney = _.round(12.25 * (days/365), 2);
+      return 'If you had started keeping bees on your wedding day, you would now have ' + kgHoney + 'kg of honey';
+    },
+    body: 'We wish you a marriage that is every bit as sweet.'
+  },
+  {
+    headline: function(days) {
       var years = _.round(days/88, 2);
       return 'If you lived on Mercury, you would already be married ' + years + ' years';
     },
@@ -108,4 +158,4 @@ var content = [
   }
 ];
 
-// content = _.shuffle(content);
+content = _.shuffle(content);
